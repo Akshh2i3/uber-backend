@@ -30,8 +30,11 @@ const userSchema = new mongoose.Schema({
 })
 
 
-userSchema.methods.generateAuthToken = () => {
-    const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET)
+// came across an error where i found my token contain no payload or data
+// after checking why i found that i am using arrow function and this keyword simultaneously
+// due to which this._id stores undefined and my token contain no payload
+userSchema.methods.generateAuthToken = function () {
+    const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
     return token
 }
 
